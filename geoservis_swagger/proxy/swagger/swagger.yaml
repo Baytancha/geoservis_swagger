@@ -1,0 +1,107 @@
+definitions:
+    Address:
+        properties:
+            city:
+                type: string
+                x-go-name: City
+            house:
+                type: string
+                x-go-name: House
+            lat:
+                type: string
+                x-go-name: Lat
+            lon:
+                type: string
+                x-go-name: Lon
+            street:
+                type: string
+                x-go-name: Street
+        type: object
+        x-go-package: test
+    GeocodeResponse:
+        properties:
+            addresses:
+                description: An array of addresses
+                items:
+                    $ref: '#/definitions/Address'
+                type: array
+                x-go-name: Addresses
+        type: object
+        x-go-package: test
+    SearchResponse:
+        properties:
+            addresses:
+                description: An array of addresses
+                items:
+                    $ref: '#/definitions/Address'
+                type: array
+                x-go-name: Addresses
+        type: object
+        x-go-package: test
+info: 
+    title: 'KATA Api:'
+    version: "0.1"
+paths:
+    /api/address/geocode:
+        post:
+            description: gets addresses based on geographic coordinates submitted in URL query param or request body
+            operationId: GetAddressByGeocode
+            parameters:
+                - description: latitude
+                  in: query
+                  name: lat
+                  type: string
+                  x-go-name: Lat
+                - description: longitude
+                  in: query
+                  name: lng
+                  type: string
+                  x-go-name: Lng
+                - in: body
+                  name: lat_lng
+                  type: string
+            produces:
+                - application/json
+            responses:
+                "200":
+                    description: an array of addresses
+                    schema:
+                        $ref: '#/definitions/GeocodeResponse'
+                "400":
+                    description: invalid request body
+                    schema:
+                        type: string
+                "500":
+                    description: internal server error
+                    schema:
+                        type: string
+    /api/address/search:
+        post:
+            description: gets addresses either from URL query param or request body
+            operationId: GetAddress
+            parameters:
+                - description: A search request in JSON format
+                  example: Москва Обуховская 11
+                  in: query
+                  name: addr_query
+                  type: string
+                  x-go-name: Query
+                - in: body
+                  name: addr_query
+                  type: string
+            produces:
+                - application/json
+            responses:
+                "200":
+                    description: an array of addresses
+                    schema:
+                        $ref: '#/definitions/SearchResponse'
+                "400":
+                    description: invalid request body
+                    schema:
+                        type: string
+                "500":
+                    description: internal server error
+                    schema:
+                        type: string
+swagger: "2.0"
